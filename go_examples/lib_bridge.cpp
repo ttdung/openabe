@@ -59,3 +59,54 @@ char* LIB_decrypt(void* abe, char* key, char* ct) {
 
     return pt;
 }
+
+char* LIB_exportMSK(void* abe) {
+    std::string sk;
+    AsAbe(abe)->exportSecretParams(sk);
+
+    char *skc = new char[sk.size() + 1];
+    std::strcpy(skc, sk.c_str());
+
+    return skc;
+}
+
+int LIB_importMSK(void* abe, char* msk) {
+    AsAbe(abe)->importSecretParams(std::string((char*)msk));
+    return 0;
+}
+
+
+char* LIB_exportMPK(void* abe) {
+    std::string pk;
+    AsAbe(abe)->exportPublicParams(pk);
+
+    char *pkc = new char[pk.size() + 1];
+    std::strcpy(pkc, pk.c_str());
+
+    return pkc;
+}
+
+int LIB_importMPK(void* abe, char* mpk) {
+    AsAbe(abe)->importPublicParams(std::string((char*)mpk));
+    return 0;
+}
+
+char* LIB_exportUserKey(void* abe, char* key) {
+    std::string k;
+    AsAbe(abe)->exportUserKey(std::string((char*)key), k);
+
+    char *kc = new char[k.size() + 1];
+    std::strcpy(kc, k.c_str());
+
+    return kc;
+}
+
+char* LIB_importUserKey(void* abe,char* key) {
+    std::string k;
+    AsAbe(abe)->importUserKey(k, std::string((char*)key));
+    
+    char *skc = new char[k.size() + 1];
+    std::strcpy(skc, k.c_str());
+
+    return skc;
+}

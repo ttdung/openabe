@@ -45,6 +45,21 @@ func (abe ABE) decrypt(key string, ct string) string {
 
 }
 
+func (abe ABE) exportUserKey(key string) string {
+
+	lkey := C.CString(key)
+	return C.GoString(C.LIB_exportUserKey(abe.ptr, lkey))
+
+}
+
+func (abe ABE) importUserKey(key string) string {
+
+	lkey := C.CString(key)
+	//LIB_exportUserKey
+	return C.GoString(C.LIB_importUserKey(abe.ptr, lkey))
+
+}
+
 // d, err := os.ReadFile("./sample.json")
 // if err != nil {
 // 	panic(err)
@@ -59,11 +74,16 @@ func main() {
 	abe.genkey("student|math", "key_alice")
 	abe.genkey("student|CS", "key_bob")
 
+	ekey := abe.exportUserKey("key_alice")
+
 	data := "hello world"
 
 	ct := abe.encrypt("(student) and (math or EE)", data)
 
-	pt := abe.decrypt("key_alice", ct)
+	//pt := abe.decrypt("key_alice", ct)
+
+	ikey := abe.importUserKey(ekey)
+	pt := abe.decrypt(ikey, ct)
 
 	if pt == data {
 		fmt.Printf("Decrypt Successful pt = %v \n", pt)
