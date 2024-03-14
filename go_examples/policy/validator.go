@@ -134,36 +134,3 @@ func getPolicy(raw string) []string {
 	}
 	return policy
 }
-
-// func replaceASCIIChars(input string) string {
-// 	output := ""
-// 	for index := 0; index < len(input); index++ {
-// 		cur := index
-// 		for (input[cur] >= 'a' && input[cur] <= 'z') || (input[cur] >= 'A' && input[cur] <= 'Z') {
-// 			cur++
-// 		}
-// 		if cur == index {
-// 			output += string(input[index])
-// 		} else {
-// 			output += "0"
-// 			index = cur - 1
-// 		}
-
-// 	}
-// 	return output
-// }
-
-// func reformatString(A string, B string) string {
-// 	A = strings.ReplaceAll(A, "(", "4")
-// 	A = strings.ReplaceAll(A, ")", "5")
-// 	A = strings.ReplaceAll(A, "and", "2")
-// 	A = strings.ReplaceAll(A, "or", "3")
-// 	A = strings.ReplaceAll(A, " ", "")
-
-// 	splittedB := strings.Split(B, "|")
-// 	funk.ForEach(splittedB, func(value string) {
-// 		A = strings.ReplaceAll(A, value, "1")
-// 	})
-
-// 	return replaceASCIIChars(A)
-// }
