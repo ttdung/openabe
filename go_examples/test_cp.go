@@ -6,6 +6,8 @@ import "C"
 import (
 	"fmt"
 	"unsafe"
+
+	p "github.com/nxhieu3102/openabe/policy"
 )
 
 type ABE struct {
@@ -13,19 +15,26 @@ type ABE struct {
 }
 
 func NewABE(abename string) ABE {
-	var abe ABE
-	abe.ptr = C.LIB_NewABE(C.CString(abename))
-	return abe
+	return ABE{
+		ptr: C.LIB_NewABE(C.CString(abename)),
+	}
 }
+
+// re format token with format
+// char "(" : 4, char ")": 5
+// string "and": 2, string "or": 3
+// value exist in attribute map: 1
+// value not exist in attribute map: 0
 
 func (abe ABE) generateParams() {
 	C.LIB_generateParams(abe.ptr)
 }
 
-func (abe ABE) genkey(att string, key string) {
+func (abe *ABE) genkey(att string, key string) {
 	latt := C.CString(att)
 	lkey := C.CString(key)
 
+	abe.attribute[key] = att
 	C.LIB_keygen(abe.ptr, latt, lkey)
 }
 
@@ -67,10 +76,15 @@ func (abe ABE) importUserKey(key string) string {
 // data := string(d)
 
 func main() {
+
+	policyValidator := p.NewValidator("(student) and (math or EE)")
+	if !policyValidator.Validate("student|math") {
+		fmt.Println("Attribute not valid with policy")
+		return
+	}
+
 	abe := NewABE("CP-ABE")
-
 	abe.generateParams() // (MPK, MSK)
-
 	abe.genkey("student|math", "key_alice")
 	abe.genkey("student|CS", "key_bob")
 
