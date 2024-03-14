@@ -34,7 +34,6 @@ func (abe *ABE) genkey(att string, key string) {
 	latt := C.CString(att)
 	lkey := C.CString(key)
 
-	abe.attribute[key] = att
 	C.LIB_keygen(abe.ptr, latt, lkey)
 }
 
