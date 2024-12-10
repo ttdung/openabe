@@ -10,25 +10,29 @@ using namespace oabe::crypto;
 
 // make chean
 
+void* LIB_InitializeOpenABE() {
+
+    InitializeOpenABE();
+    return 0;
+}
+
+void* LIB_ShutdownABE() {
+
+    ShutdownOpenABE();
+    return 0;
+}
 
 void* LIB_NewABE(char* name) {
 
-    // std::cout << "[c++ bridge] LIB_NewABE" << name << ")" << std::endl;
-    
-    InitializeOpenABE();
-
-   auto cpabe = new OpenABECryptoContext(name);
-
-//   std::cout << "[c++ bridge] LIB_NewABE(" << name << ") will return pointer "
-            // << cpabe << std::endl;
-
-  return cpabe;
+    auto cpabe = new OpenABECryptoContext(name);
+    return cpabe;
 }
 
 // Utility function local to the bridge's implementation
 OpenABECryptoContext* AsAbe(void* abe) { return reinterpret_cast<OpenABECryptoContext*>(abe); }
 
 void LIB_generateParams(void* abe) {
+
     AsAbe(abe)->generateParams();
 }
 
@@ -61,6 +65,7 @@ char* LIB_decrypt(void* abe, char* key, char* ct) {
 }
 
 char* LIB_exportMSK(void* abe) {
+
     std::string sk;
     AsAbe(abe)->exportSecretParams(sk);
 
@@ -71,12 +76,14 @@ char* LIB_exportMSK(void* abe) {
 }
 
 int LIB_importMSK(void* abe, char* msk) {
+
     AsAbe(abe)->importSecretParams(std::string((char*)msk));
     return 0;
 }
 
 
 char* LIB_exportMPK(void* abe) {
+
     std::string pk;
     AsAbe(abe)->exportPublicParams(pk);
 
@@ -87,11 +94,13 @@ char* LIB_exportMPK(void* abe) {
 }
 
 int LIB_importMPK(void* abe, char* mpk) {
+
     AsAbe(abe)->importPublicParams(std::string((char*)mpk));
     return 0;
 }
 
 char* LIB_exportUserKey(void* abe, char* key) {
+
     std::string k;
     AsAbe(abe)->exportUserKey(std::string((char*)key), k);
 
@@ -102,6 +111,7 @@ char* LIB_exportUserKey(void* abe, char* key) {
 }
 
 char* LIB_importUserKey(void* abe,char* key) {
+    
     std::string k;
     AsAbe(abe)->importUserKey(k, std::string((char*)key));
     
