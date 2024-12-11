@@ -111,7 +111,7 @@ char* LIB_exportUserKey(void* abe, char* key) {
 }
 
 char* LIB_importUserKey(void* abe,char* key) {
-    
+
     std::string k;
     AsAbe(abe)->importUserKey(k, std::string((char*)key));
     
