@@ -16,7 +16,7 @@ void* LIB_InitializeOpenABE() {
     return 0;
 }
 
-void* LIB_ShutdownABE() {
+void* LIB_ShutdownOpenABE() {
 
     ShutdownOpenABE();
     return 0;
@@ -119,4 +119,19 @@ char* LIB_importUserKey(void* abe,char* key) {
     std::strcpy(skc, k.c_str());
 
     return skc;
+}
+
+char* LIB_ImportAndDecrypt(void* abe,char* key, char* ct) {
+
+    std::string k;
+    AsAbe(abe)->importUserKey(k, std::string((char*)key));
+    
+    std::string pt1;
+    AsAbe(abe)->decrypt(k, std::string((char*)ct), pt1);
+
+    char *pt = new char[pt1.size() + 1];
+    std::strcpy(pt, pt1.c_str());
+
+    return pt;
+
 }

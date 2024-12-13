@@ -18,7 +18,7 @@ func InitializeOpenABE() {
 }
 
 func ShutdownABE() {
-	C.LIB_ShutdownABE()
+	C.LIB_ShutdownOpenABE()
 }
 
 func NewABE(abename string) ABE {
@@ -104,6 +104,16 @@ func (abe *ABE) ImportMPK(key string) {
 	C.LIB_importMPK(abe.ptr, lkey)
 }
 
+func (abe *ABE) ImportAndDecrypt(key string, ct string) string {
+	lkey := C.CString(key)
+	lct := C.CString(ct)
+
+	defer C.free(unsafe.Pointer(lkey))
+	defer C.free(unsafe.Pointer(lct))
+
+	return C.GoString(C.LIB_ImportAndDecrypt(abe.ptr, lkey, lct))
+}
+
 // d, err := os.ReadFile("./sample.json")
 // if err != nil {
 // 	panic(err)
@@ -149,8 +159,9 @@ func main() {
 
 	abe2 := NewABE("CP-ABE")
 	abe2.ImportMPK(mpk)
-	akey := abe2.ImportUserKey(alice_key)
-	pt := abe2.Decrypt(akey, ct)
+	// akey := abe2.ImportUserKey(alice_key)
+	// pt := abe2.Decrypt(akey, ct)
+	pt := abe2.ImportAndDecrypt(alice_key, ct)
 
 	if pt == data {
 		fmt.Printf("Alice Decrypt Successful pt = %v \n", pt)

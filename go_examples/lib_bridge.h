@@ -4,7 +4,7 @@ extern "C" {
 #endif
 
 void* LIB_InitializeOpenABE();
-void* LIB_ShutdownABE();
+void* LIB_ShutdownOpenABE();
 void* LIB_NewABE(char* name);
 void  LIB_generateParams(void* abe);
 char* LIB_encrypt(void* abe, char* att, char* pt);
@@ -18,6 +18,7 @@ char* LIB_exportMPK(void* abe);
 char* LIB_exportMSK(void* abe);
 int   LIB_importMPK(void* abe, char* mpk);
 int   LIB_importMSK(void* abe, char* msk);
+char* LIB_ImportAndDecrypt(void* abe,char* key, char* ct);
 
 #ifdef __cplusplus
 }  // extern "C"

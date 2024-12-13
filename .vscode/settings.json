@@ -61,7 +61,10 @@
         "streambuf": "cpp",
         "thread": "cpp",
         "cinttypes": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "codecvt": "cpp",
+        "unordered_set": "cpp",
+        "variant": "cpp"
     },
     "editor.fontSize": 18
 }
