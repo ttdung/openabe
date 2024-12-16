@@ -1,2 +1,12 @@
+// go to openabe folder
+. ./env
+make
+
+//
+cd go_examples
+
 make all
+// copy liblibrary.so ../deps/root/lib
+// copy ../src/libopenabe.a & .so, & libzsym.a to ../deps/root/lib
 go run test_cp.go
+

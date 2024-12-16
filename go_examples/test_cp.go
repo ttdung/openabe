@@ -21,10 +21,38 @@ func ShutdownABE() {
 	C.LIB_ShutdownOpenABE()
 }
 
+func NewCString(input string) *C.char {
+	for {
+		output := C.CString(input)
+		str := fmt.Sprintf("%p", output)
+		if len(str) == 14 {
+			fmt.Println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!! output addr ", output)
+			C.free(unsafe.Pointer(output))
+			continue
+		}
+
+		fmt.Println("output addr ", output)
+		return output
+	}
+}
+
 func NewABE(abename string) ABE {
-	var abe ABE
-	abe.ptr = C.LIB_NewABE(C.CString(abename))
-	return abe
+	for {
+		name := NewCString(abename)
+		defer C.free(unsafe.Pointer(name))
+
+		var abe ABE
+		abe.ptr = C.LIB_NewABE(C.CString(abename))
+
+		str := fmt.Sprintf("%p", abe.ptr)
+		if len(str) == 14 {
+			C.free(unsafe.Pointer(abe.ptr))
+			continue
+		}
+
+		fmt.Println("abe.ptr ", abe.ptr)
+		return abe
+	}
 }
 
 func (abe *ABE) GenerateParams() {
@@ -32,8 +60,8 @@ func (abe *ABE) GenerateParams() {
 }
 
 func (abe *ABE) Genkey(att string, key string) {
-	latt := C.CString(att)
-	lkey := C.CString(key)
+	latt := NewCString(att)
+	lkey := NewCString(key)
 
 	defer C.free(unsafe.Pointer(latt))
 	defer C.free(unsafe.Pointer(lkey))
@@ -42,8 +70,8 @@ func (abe *ABE) Genkey(att string, key string) {
 }
 
 func (abe *ABE) Encrypt(att string, pt string) string {
-	latt := C.CString(att)
-	lpt := C.CString(pt)
+	latt := NewCString(att)
+	lpt := NewCString(pt)
 
 	defer C.free(unsafe.Pointer(latt))
 	defer C.free(unsafe.Pointer(lpt))
@@ -52,8 +80,8 @@ func (abe *ABE) Encrypt(att string, pt string) string {
 }
 
 func (abe *ABE) Decrypt(key string, ct string) string {
-	lkey := C.CString(key)
-	lct := C.CString(ct)
+	lkey := NewCString(key)
+	lct := NewCString(ct)
 
 	defer C.free(unsafe.Pointer(lkey))
 	defer C.free(unsafe.Pointer(lct))
@@ -63,7 +91,7 @@ func (abe *ABE) Decrypt(key string, ct string) string {
 }
 
 func (abe *ABE) ExportUserKey(key string) string {
-	lkey := C.CString(key)
+	lkey := NewCString(key)
 
 	defer C.free(unsafe.Pointer(lkey))
 
@@ -71,8 +99,8 @@ func (abe *ABE) ExportUserKey(key string) string {
 }
 
 func (abe *ABE) ImportUserKey(index string, key string) string {
-	lkey := C.CString(key)
-	lidx := C.CString(index)
+	lkey := NewCString(key)
+	lidx := NewCString(index)
 
 	defer C.free(unsafe.Pointer(lkey))
 	defer C.free(unsafe.Pointer(lidx))
@@ -91,7 +119,7 @@ func (abe *ABE) ExportMSK() string {
 }
 
 func (abe *ABE) ImportMSK(key string) {
-	lkey := C.CString(key)
+	lkey := NewCString(key)
 
 	defer C.free(unsafe.Pointer(lkey))
 
@@ -99,7 +127,7 @@ func (abe *ABE) ImportMSK(key string) {
 }
 
 func (abe *ABE) ImportMPK(key string) {
-	lkey := C.CString(key)
+	lkey := NewCString(key)
 
 	defer C.free(unsafe.Pointer(lkey))
 
@@ -107,8 +135,8 @@ func (abe *ABE) ImportMPK(key string) {
 }
 
 func (abe *ABE) ImportAndDecrypt(key string, ct string) string {
-	lkey := C.CString(key)
-	lct := C.CString(ct)
+	lkey := NewCString(key)
+	lct := NewCString(ct)
 
 	defer C.free(unsafe.Pointer(lkey))
 	defer C.free(unsafe.Pointer(lct))
@@ -117,8 +145,8 @@ func (abe *ABE) ImportAndDecrypt(key string, ct string) string {
 }
 
 func (abe *ABE) KeygenAndDecrypt(att string, ct string) string {
-	latt := C.CString(att)
-	lct := C.CString(ct)
+	latt := NewCString(att)
+	lct := NewCString(ct)
 
 	defer C.free(unsafe.Pointer(latt))
 	defer C.free(unsafe.Pointer(lct))
