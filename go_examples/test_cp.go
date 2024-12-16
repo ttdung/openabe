@@ -70,13 +70,15 @@ func (abe *ABE) ExportUserKey(key string) string {
 	return C.GoString(C.LIB_exportUserKey(abe.ptr, lkey))
 }
 
-func (abe *ABE) ImportUserKey(key string) string {
+func (abe *ABE) ImportUserKey(index string, key string) string {
 	lkey := C.CString(key)
+	lidx := C.CString(index)
 
 	defer C.free(unsafe.Pointer(lkey))
+	defer C.free(unsafe.Pointer(lidx))
 
 	//LIB_exportUserKey
-	return C.GoString(C.LIB_importUserKey(abe.ptr, lkey))
+	return C.GoString(C.LIB_importUserKey(abe.ptr, lidx, lkey))
 
 }
 
@@ -114,11 +116,15 @@ func (abe *ABE) ImportAndDecrypt(key string, ct string) string {
 	return C.GoString(C.LIB_ImportAndDecrypt(abe.ptr, lkey, lct))
 }
 
-// d, err := os.ReadFile("./sample.json")
-// if err != nil {
-// 	panic(err)
-// }
-// data := string(d)
+func (abe *ABE) KeygenAndDecrypt(att string, ct string) string {
+	latt := C.CString(att)
+	lct := C.CString(ct)
+
+	defer C.free(unsafe.Pointer(latt))
+	defer C.free(unsafe.Pointer(lct))
+
+	return C.GoString(C.LIB_KeygenAndDecrypt(abe.ptr, latt, lct))
+}
 
 func main() {
 	InitializeOpenABE()
@@ -144,12 +150,9 @@ func main() {
 	abe.Genkey("student|EE", "key")
 	carol_key := abe.ExportUserKey("key")
 
-	// bob_key := abe.ExportUserKey("key_bob")
-	// carol_key := abe.ExportUserKey("key_carol")
-
 	abe1 := NewABE("CP-ABE")
 	abe1.ImportMPK(mpk)
-	abe1.ImportUserKey(alice_key)
+	// abe1.ImportUserKey("alice", alice_key)
 
 	data := "hello world"
 
@@ -159,9 +162,10 @@ func main() {
 
 	abe2 := NewABE("CP-ABE")
 	abe2.ImportMPK(mpk)
-	// akey := abe2.ImportUserKey(alice_key)
-	// pt := abe2.Decrypt(akey, ct)
-	pt := abe2.ImportAndDecrypt(alice_key, ct)
+	akey := abe2.ImportUserKey("alice", alice_key)
+	pt := abe2.Decrypt(akey, ct)
+	// pt := abe2.ImportAndDecrypt(alice_key, ct)
+	// pt := abe2.KeygenAndDecrypt("student|math", ct)
 
 	if pt == data {
 		fmt.Printf("Alice Decrypt Successful pt = %v \n", pt)
@@ -169,8 +173,9 @@ func main() {
 		fmt.Println("Alice Fail to decrypt")
 	}
 
-	bkey := abe2.ImportUserKey(bob_key)
+	bkey := abe2.ImportUserKey("bob", bob_key)
 	pt = abe2.Decrypt(bkey, ct)
+	// pt = abe2.KeygenAndDecrypt("student|CS", ct)
 
 	if pt == data {
 		fmt.Printf("Bob Decrypt Successful pt = %v \n", pt)
@@ -178,9 +183,10 @@ func main() {
 		fmt.Println("Bob Fail to decrypt")
 	}
 
-	ckey := abe2.ImportUserKey(carol_key)
+	ckey := abe2.ImportUserKey("carol", carol_key)
 	pt = abe2.Decrypt(ckey, ct)
 
+	// pt = abe2.KeygenAndDecrypt("student|EE", ct)
 	if pt == data {
 		fmt.Printf("Carol Decrypt Successful pt = %v \n", pt)
 	} else {
@@ -189,31 +195,3 @@ func main() {
 
 	ShutdownABE()
 }
-
-/*
-func main() {
-	abe := NewABE("CP-ABE")
-
-	abe.generateParams() // (MPK, MSK)
-
-	abe.genkey("student|math", "key_alice")
-	abe.genkey("student|CS", "key_bob")
-
-	ekey := abe.exportUserKey("key_alice")
-
-	data := "hello world"
-
-	ct := abe.encrypt("(student) and (math or EE)", data)
-
-	//pt := abe.decrypt("key_alice", ct)
-
-	ikey := abe.importUserKey(ekey)
-	pt := abe.decrypt(ikey, ct)
-
-	if pt == data {
-		fmt.Printf("Decrypt Successful pt = %v \n", pt)
-	} else {
-		fmt.Println("Fail to decrypt")
-	}
-}
-*/

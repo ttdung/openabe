@@ -1,0 +1,62 @@
+Performing C SOURCE FILE Test CMAKE_HAVE_LIBC_PTHREAD failed with the following output:
+Change Dir: /home/mmt/openabe/deps/relic/tmpec-Tyci/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_96f86/fast && make[3]: Entering directory '/home/mmt/openabe/deps/relic/tmpec-Tyci/CMakeFiles/CMakeTmp'
+/usr/bin/make -f CMakeFiles/cmTC_96f86.dir/build.make CMakeFiles/cmTC_96f86.dir/build
+make[4]: Entering directory '/home/mmt/openabe/deps/relic/tmpec-Tyci/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_96f86.dir/src.c.o
+/usr/bin/cc   -DCMAKE_HAVE_LIBC_PTHREAD   -o CMakeFiles/cmTC_96f86.dir/src.c.o   -c /home/mmt/openabe/deps/relic/tmpec-Tyci/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_96f86
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_96f86.dir/link.txt --verbose=1
+/usr/bin/cc  -DCMAKE_HAVE_LIBC_PTHREAD    -rdynamic CMakeFiles/cmTC_96f86.dir/src.c.o  -o cmTC_96f86 
+/usr/bin/ld: CMakeFiles/cmTC_96f86.dir/src.c.o: in function `main':
+src.c:(.text+0x46): undefined reference to `pthread_create'
+/usr/bin/ld: src.c:(.text+0x52): undefined reference to `pthread_detach'
+/usr/bin/ld: src.c:(.text+0x63): undefined reference to `pthread_join'
+collect2: error: ld returned 1 exit status
+make[4]: *** [CMakeFiles/cmTC_96f86.dir/build.make:87: cmTC_96f86] Error 1
+make[4]: Leaving directory '/home/mmt/openabe/deps/relic/tmpec-Tyci/CMakeFiles/CMakeTmp'
+make[3]: *** [Makefile:121: cmTC_96f86/fast] Error 2
+make[3]: Leaving directory '/home/mmt/openabe/deps/relic/tmpec-Tyci/CMakeFiles/CMakeTmp'
+
+
+Source file was:
+#include <pthread.h>
+
+void* test_func(void* data)
+{
+  return data;
+}
+
+int main(void)
+{
+  pthread_t thread;
+  pthread_create(&thread, NULL, test_func, NULL);
+  pthread_detach(thread);
+  pthread_join(thread, NULL);
+  pthread_atfork(NULL, NULL, NULL);
+  pthread_exit(NULL);
+
+  return 0;
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/mmt/openabe/deps/relic/tmpec-Tyci/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make cmTC_c3c19/fast && make[3]: Entering directory '/home/mmt/openabe/deps/relic/tmpec-Tyci/CMakeFiles/CMakeTmp'
+/usr/bin/make -f CMakeFiles/cmTC_c3c19.dir/build.make CMakeFiles/cmTC_c3c19.dir/build
+make[4]: Entering directory '/home/mmt/openabe/deps/relic/tmpec-Tyci/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_c3c19.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_c3c19.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.16/Modules/CheckFunctionExists.c
+Linking C executable cmTC_c3c19
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c3c19.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_c3c19.dir/CheckFunctionExists.c.o  -o cmTC_c3c19  -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+make[4]: *** [CMakeFiles/cmTC_c3c19.dir/build.make:87: cmTC_c3c19] Error 1
+make[4]: Leaving directory '/home/mmt/openabe/deps/relic/tmpec-Tyci/CMakeFiles/CMakeTmp'
+make[3]: *** [Makefile:121: cmTC_c3c19/fast] Error 2
+make[3]: Leaving directory '/home/mmt/openabe/deps/relic/tmpec-Tyci/CMakeFiles/CMakeTmp'
+
+
+

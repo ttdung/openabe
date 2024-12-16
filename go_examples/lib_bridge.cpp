@@ -110,10 +110,10 @@ char* LIB_exportUserKey(void* abe, char* key) {
     return kc;
 }
 
-char* LIB_importUserKey(void* abe,char* key) {
+char* LIB_importUserKey(void* abe,char* index, char* key) {
 
-    std::string k;
-    AsAbe(abe)->importUserKey(k, std::string((char*)key));
+    std::string k(index);
+    AsAbe(abe)->importUserKey(std::string((char*)index), std::string((char*)key));
     
     char *skc = new char[k.size() + 1];
     std::strcpy(skc, k.c_str());
@@ -134,4 +134,18 @@ char* LIB_ImportAndDecrypt(void* abe,char* key, char* ct) {
 
     return pt;
 
+}
+
+char* LIB_KeygenAndDecrypt(void* abe, char* att, char* ct) {
+
+    std::string key;
+    AsAbe(abe)->keygen(std::string((char*)att), key);
+
+    std::string pt1;
+    AsAbe(abe)->decrypt(key, std::string((char*)ct), pt1);
+
+    char *pt = new char[pt1.size() + 1];
+    std::strcpy(pt, pt1.c_str());
+
+    return pt;
 }
