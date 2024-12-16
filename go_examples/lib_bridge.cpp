@@ -110,13 +110,16 @@ char* LIB_exportUserKey(void* abe, char* key) {
     return kc;
 }
 
-char* LIB_importUserKey(void* abe,char* index, char* key) {
+char* LIB_importUserKey(void* abe, char* index, char* key) {
+    // Convert index and key to std::string
+    std::string indexStr(index);
+    std::string keyStr(key);
 
-    std::string k(index);
-    AsAbe(abe)->importUserKey(std::string((char*)index), std::string((char*)key));
+    // Call the importUserKey method
+    AsAbe(abe)->importUserKey(indexStr, keyStr);
     
-    char *skc = new char[k.size() + 1];
-    std::strcpy(skc, k.c_str());
+    char *skc = new char[indexStr.size() + 1];
+    std::strcpy(skc, indexStr.c_str());
 
     return skc;
 }
